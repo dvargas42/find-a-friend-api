@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PetAge {
+  PUPPY
+  ADULT
+  SENIOR
+}
+
+enum PetSize {
+  TINY
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum PetEnvironment {
+  SPACIOUS_ENVIRONMENT
+  SMALL_ENVIRONMENT
+}
+
+model Organization {
+  id               String   @id @default(uuid())
+  name             String   @db.VarChar(100)
+  responsible_name String   @db.VarChar(100)
+  email            String   @unique @db.VarChar(200)
+  phone            String   @db.VarChar(20)
+  password         String   @db.VarChar(200)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  addresses Address[]
+  pets      Pet[]
+
+  @@map("organizations")
+}
+
+model Address {
+  id         String   @id @default(uuid())
+  address    String   @db.VarChar(150)
+  number     String   @db.VarChar(10)
+  complement String?  @db.VarChar(100)
+  city       String   @db.VarChar(100)
+  postalCode String   @db.VarChar(20)
+  state      String   @db.VarChar(50)
+  country    String   @db.VarChar(50)
+  latitude   Decimal  @db.Decimal(10, 7)
+  longitude  Decimal  @db.Decimal(10, 7)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  organization_id String
+
+  @@map("addresses")
+}
+
+model Pet {
+  id                 String         @id @default(uuid())
+  name               String         @db.VarChar(100)
+  about              String         @db.VarChar(300)
+  age                PetAge
+  size               PetSize
+  energy_level       Int            @db.Integer()
+  independency_level Int            @db.Integer()
+  environment        PetEnvironment
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+
+  photos                Photo[]
+  adoption_requirements AdoptionRequirement[]
+
+  Organization    Organization @relation(fields: [organization_id], references: [id])
+  organization_id String
+
+  @@map("pets")
+}
+
+model Photo {
+  id         String   @id @default(uuid())
+  url        String   @db.VarChar(300)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pet    Pet    @relation(fields: [pet_id], references: [id])
+  pet_id String
+
+  @@map("photos")
+}
+
+model AdoptionRequirement {
+  id           String   @id @default(uuid())
+  requirements String   @db.VarChar(200)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  pet    Pet    @relation(fields: [pet_id], references: [id])
+  pet_id String
+
+  @@map("adoption_requirements")
+}

@@ -1,0 +1,28 @@
+{
+  "name": "03-find-a-friend-challenge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node buid/server.js",
+    "start:dev": "tsx watch src/server.ts",
+    "build": "tsup src --out-dir build"
+  },
+  "keywords": [],
+  "author": "Daniel Vargas",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "6.11.1",
+    "dotenv": "17.0.1",
+    "fastify": "5.4.0",
+    "zod": "3.25.74"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6",
+    "@types/node": "24.0.10",
+    "prisma": "6.11.1",
+    "tsup": "8.5.0",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3"
+  }
+}
